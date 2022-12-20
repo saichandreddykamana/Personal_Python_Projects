@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Inbox{% endblock %}
+{% block content %}
+  <div class="dashboard-container">
+    <div class="row">
+      <div class="side-banner">
+        <div class="mail-list-container">
+          <ul class="mail-list">
+            <li class="mail-item">
+              <a href="#" class="item-heading">Inbox</a>
+              <b class="item-count">256</b>
+            </li>
+            <li class="mail-item">
+              <a href="#">Draft</a>
+              <b class="item-count">56</b>
+            </li>
+            <li class="mail-item">
+              <a href="#">Junk/Spam</a>
+              <b class="item-count">25</b>
+            </li>
+            <li class="mail-item">
+              <a href="#">Sent</a>
+              <b class="item-count">6</b>
+            </li>
+            <li class="mail-item">
+              <a href="#">Compose</a>
+              <b class="item-count"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></b>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="main-container">
+        <div class="main-header">
+          <h2>Inbox</h2>
+        </div>
+        <div class="main-description">
+          <ul class="mails-list">
+            <li class="mail">
+              <a href="#" class="mail-info">
+                <b class="mail-sender"> SAI CHAND REDDY KAMANA</b> <b class="mail-subject"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</b> <span class="mail-date"> Mon 28 Apr 2022 07:18:00 PM</span>
+              </a>
+            </li>
+            <li class="mail">
+              <a href="#" class="mail-info">
+                <b class="mail-sender"> SAI CHAND REDDY KAMANA</b> <b class="mail-subject"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</b> <span class="mail-date"> Mon 28 Apr 2022 07:18:00 PM</span>
+              </a>
+            </li>
+            <li class="mail">
+              <a href="#" class="mail-info">
+                <b class="mail-sender"> SAI CHAND REDDY KAMANA</b> <b class="mail-subject"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</b> <span class="mail-date"> Mon 28 Apr 2022 07:18:00 PM</span>
+              </a>
+            </li>
+            <li class="mail">
+              <a href="#" class="mail-info">
+                <b class="mail-sender"> SAI CHAND REDDY KAMANA</b> <b class="mail-subject"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</b> <span class="mail-date"> Mon 28 Apr 2022 07:18:00 PM</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="main-pagination">
+          <ul class="pagination-list">
+            <li class="pagination-item left">
+              <a href=""> <i class="fa fa-caret-left" aria-hidden="true"></i> </a>
+            </li>
+            <li class="pagination-item">
+              <a href=""> 1 </a>
+            </li>
+            <li class="pagination-item">
+              <a href=""> 2 </a>
+            </li>
+            <li class="pagination-item">
+              <a href=""> 3 </a>
+            </li>
+            <li class="pagination-item right">
+              <a href=""> <i class="fa fa-caret-right" aria-hidden="true"></i> </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

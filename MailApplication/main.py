@@ -1,16 +1,98 @@
-from flask import Flask, render_template
+import datetime
+import re
+
+from flask import Flask, render_template, request, flash, url_for, redirect, session
+
+from UserUtils import UserUtils
 
 app = Flask(__name__)
+app.secret_key = "mail_application"
+user = UserUtils(app=app)
+error = None
+confirmation = None
 
 
 @app.route("/")
 def home():
-    return render_template('home.html')
+    print("SESSION L ", session.get('user_id'))
+    if session.get('user_id') is None:
+        return render_template('home.html', user={})
+    return redirect(url_for('dashboard'))
 
 
 @app.route("/contact")
 def contact():
-    return render_template('contact.html')
+    if session.get('user_id') is None:
+        return render_template('contact.html', user={})
+    return redirect(url_for('dashboard'))
+
+
+@app.route("/dashboard")
+def dashboard():
+    user_id = session.get('user_id')
+    details = user.get_user_details(user_id=user_id)
+    if details['active']:
+        return render_template('dashboard.html', user_id=user_id, user=details)
+    return redirect(url_for('home'))
+
+
+@app.route("/login", methods=['POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['login-email']
+        password = request.form['login-password']
+        global confirmation
+        user_details = user.login_user(email=email, password=password)
+        confirmation = user_details.get('valid')
+        if confirmation:
+            session['user_id'] = user_details.get('user_id')
+            return redirect(url_for('dashboard'))
+        flash("Please check email and password.")
+    return render_template('home.html', confirmation=False)
+
+
+@app.route("/logout")
+def logout():
+    user_id = session.get('user_id')
+    global confirmation
+    confirmation = user.logout_user(user_id=user_id)
+    if confirmation:
+        session['user_id'] = None
+        return redirect(url_for('home'))
+
+
+@app.route("/register", methods=['POST'])
+def register():
+    if request.method == 'POST':
+        first_name = request.form['first-name']
+        last_name = request.form['last-name']
+        email = request.form['register-email']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        gender = request.form['gender']
+        dob = request.form['birthday']
+        date = datetime.datetime.strptime(dob, '%Y-%m-%d')
+        year = date.year
+        phone_number = request.form['phone-number']
+        usage = request.form['usage']
+        regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        if all(x.isalpha() or x.isspace() for x in first_name) and all(x.isalpha() or x.isspace() for x in last_name) \
+                and year <= 2015 and all(x.isdigit() for x in phone_number) and all(x.isalpha() for x in gender) \
+                and re.fullmatch(regex, email) and password == confirm_password and (usage == '0' or usage == '1') \
+                and len(password) >= 10:
+            global confirmation, error
+            confirmation = user.register_user(first_name=first_name, last_name=last_name, gender=gender, email=email,
+                                              password=password, date_of_birth=dob, phone_number=phone_number,
+                                              user_usage=usage)
+            if confirmation:
+                error = "Account Created Successfully. Please login into the account."
+            else:
+                error = " Please check the email or password. Or user exists."
+        else:
+            confirmation = False
+            error = "Please enter valid data in inputs."
+    flash(error)
+    return render_template('home.html', confirmation=confirmation)
 
 
 if __name__ == "__main__":

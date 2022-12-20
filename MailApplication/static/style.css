@@ -54,7 +54,42 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: 30px 0px;
+    padding: 0px;
+}
+
+.dropbtn {
+    background-color: transparent;
+    color: white;
+    text-transform: uppercase;
+    border: none;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: black;
+  min-width: 120px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    margin-left: 150px;
 }
 
 .row{
@@ -147,6 +182,121 @@ body {
 
 .register-input > button{
     margin: 10px auto 0 18px;
+}
+
+.dashboard-container{
+    width: 100% !important;
+}
+
+.dashboard-container > .row{
+    width: inherit;
+    display: flex;
+    flex-wrap: wrap;
+    flex-flow: row;
+    padding: 0;
+    position: absolute;
+    top: 63px;
+    gap: 0;
+    bottom: 60px;
+}
+
+.side-banner{
+    flex-basis: 20%;
+    border-right: 1px solid #ddd;
+}
+
+.mail-list{
+    list-style: none;
+    margin: 0 !important;
+    padding: 20px 0 !important;
+}
+
+.mail-list li{
+    width: 100% !important;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 15px 40px;
+}
+
+.item-count{
+    color: #005ebc;
+}
+
+.mail-list li a{
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: black;
+    letter-spacing: 1px;
+}
+
+.mail-list li:hover{
+    background: #ddd;
+}
+
+.dashboard-container .main-container{
+    flex-basis: 80%;
+}
+
+.main-header{
+    border-bottom: 1px solid #ddd;
+    padding: 5px 20px;
+}
+
+.main-description{
+}
+
+.mails-list{
+    list-style: none;
+    padding: 0;
+}
+
+.mail{
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+}
+
+a:hover{
+    text-decoration: none !important;
+}
+
+.mail-info{
+    display: flex !important;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.mail-sender{
+    flex-basis: 20%;
+    color: black;
+    font-size: 13px;
+}
+
+.mail-subject{
+    flex-basis: 60%;
+    color: gray;
+    font-weight: 100;
+}
+
+.mail-date{
+    flex-basis: 20%;
+    color: black;
+    font-size: 12px;
+}
+
+.pagination-list{
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.pagination-item{
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    cursor: pointer
 }
 
 #footer{

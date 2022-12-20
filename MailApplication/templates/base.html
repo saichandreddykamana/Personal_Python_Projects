@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -15,8 +16,20 @@
     <div id="nav-bar">
       <nav>
         <ul>
-          <li><a href="{{url_for('home')}}">Home</a></li>
-          <li><a href="{{url_for('contact')}}">Contact</a></li>
+          {% if session.get('user_id') == None %}
+            <li><a href="{{url_for('home')}}">Home</a></li>
+            <li><a href="{{url_for('contact')}}">Contact</a></li>
+          {% else %}
+          <li>
+             <div class="dropdown">
+                <button class="dropbtn"> {{user['first_name']}} {{user['last_name']}} <i class="fa fa-caret-down"></i></button>
+                <div class="dropdown-content">
+                  <a href="#">Profile</a>
+                </div>
+             </div>
+          </li>
+            <li><a href="{{url_for('logout')}}">Logout</a></li>
+          {% endif %}
         </ul>
       </nav>
     </div>
