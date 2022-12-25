@@ -4,17 +4,18 @@ import re
 from flask import Flask, render_template, request, flash, url_for, redirect, session
 
 from UserUtils import UserUtils
+from MailUtils import MailUtils
 
 app = Flask(__name__)
 app.secret_key = "mail_application"
 user = UserUtils(app=app)
+mail = MailUtils(user=user)
 error = None
 confirmation = None
 
 
 @app.route("/")
 def home():
-    print("SESSION L ", session.get('user_id'))
     if session.get('user_id') is None:
         return render_template('home.html', user={})
     return redirect(url_for('dashboard'))
@@ -31,9 +32,27 @@ def contact():
 def dashboard():
     user_id = session.get('user_id')
     details = user.get_user_details(user_id=user_id)
-    if details['active']:
-        return render_template('dashboard.html', user_id=user_id, user=details)
+    if details.get('active'):
+        return render_template('dashboard.html', user_id=user_id, user=details, confirmation=confirmation)
     return redirect(url_for('home'))
+
+
+@app.route("/send_mail", methods=['POST'])
+def send_mail():
+    sender_email = user.get_user_email()
+    if request.method == 'POST':
+        receiver_mail = request.form["receiver_mail"]
+        mail_subject = request.form["mail_subject"]
+        mail_content = request.form["mail_content"]
+        response = mail.send_mail(receiver_mail=receiver_mail,
+                                  mail_content=mail_content,
+                                  mail_subject=mail_subject,
+                                  sender_mail=sender_email)
+        if response:
+            global confirmation
+            confirmation = True
+            flash("Message sent successfully")
+            return 200
 
 
 @app.route("/login", methods=['POST'])
@@ -59,6 +78,20 @@ def logout():
     if confirmation:
         session['user_id'] = None
         return redirect(url_for('home'))
+
+
+@app.route("/change_password", methods=['POST'])
+def change_password():
+    user_id = session.get('user_id')
+    if request.method == 'POST':
+        new_password = request.form["authenticate-password"]
+        user.set_user_id(user_id=user_id)
+        result = user.change_user_password(password=new_password)
+        global confirmation
+        if result == 'Password changed Successfully.':
+            confirmation = True
+            flash(result)
+            return redirect(url_for('dashboard'))
 
 
 @app.route("/register", methods=['POST'])

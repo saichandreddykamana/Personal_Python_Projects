@@ -3,10 +3,17 @@ import datetime
 from passlib.hash import sha256_crypt
 import string
 import random
+import smtplib
+import ssl
+from email.message import EmailMessage
+
+PORT = 465  # For SSL
+SMTP_GMAIL_SERVER = "smtp.gmail.com"
 
 
 class UserUtils:
     def __init__(self, app):
+        self.server = None
         self.first_name = None
         self.last_name = None
         self.gender = None
@@ -28,9 +35,12 @@ class UserUtils:
     def set_user_id(self, user_id):
         self.user_id = user_id
 
+    def get_user_email(self):
+        return self.email
+
     def check_user_exists(self):
         cursor = self.mysql.connection.cursor()
-        cursor.execute("SELECT * FROM users where email = %s", (self.email,))
+        cursor.execute("SELECT user_id, password, is_authenticated FROM users where email = %s", (self.email,))
         data = cursor.fetchall()
         cursor.close()
         result = {'user': data}
@@ -48,8 +58,11 @@ class UserUtils:
             user_details = details
         result = {'valid': False}
         if user_details.get('user_id') is not None:
-            result['user_id'] = user_details.get('user_id')
             if sha256_crypt.verify(password, user_details.get('password')):
+                if user_details.get('is_authenticated') == 1:
+                    self.login_user_smtp(password=password, sender_mail=self.email, receiver_mail=self.email,
+                                         message="Account logged in succesfully", subject="test mail")
+                result['user_id'] = user_details.get('user_id')
                 cursor = self.mysql.connection.cursor()
                 cursor.execute(
                     "UPDATE users SET active = true WHERE email=%s", (self.email,))
@@ -58,10 +71,26 @@ class UserUtils:
                 result['valid'] = True
         return result
 
+    def login_user_smtp(self, password, sender_mail, receiver_mail, message, subject):
+        context = ssl.create_default_context()
+        self.server = smtplib.SMTP_SSL(SMTP_GMAIL_SERVER, PORT, context=context)
+        self.server.login(self.email, password)
+        msg = 'Subject: {}\n\n{}'.format(subject, message)
+        self.server.sendmail(self.email, self.email, msg)
+
+    def change_user_password(self, password):
+        self.password = sha256_crypt.encrypt(password)
+        cursor = self.mysql.connection.cursor()
+        cursor.execute("Update users SET password = %s, is_authenticated=true WHERE user_id=%s",
+                       (self.password, self.user_id))
+        self.mysql.connection.commit()
+        cursor.close()
+        return "Password changed Successfully."
+
     def get_user_details(self, user_id):
         cursor = self.mysql.connection.cursor()
         cursor.execute(
-            "SELECT first_name, last_name, gender, email, user_usage, phone_number, user_id, active, joined_on, profile_picture from users WHERE user_id=%s", (user_id,))
+            "SELECT users.first_name, users.is_authenticated, users.last_name, users.gender, users.email, users.user_usage, users.phone_number, users.user_id, users.active, users.joined_on, users.profile_picture, user_mails_info.inbox_count, user_mails_info.draft_count, user_mails_info.sent_count, user_mails_info.junk_count from users  INNER JOIN user_mails_info ON users.user_id=user_mails_info.user_id AND users.user_id=%s", (user_id,))
         data = cursor.fetchall()
         cursor.close()
         user_details = {}
@@ -94,5 +123,18 @@ class UserUtils:
                             self.joined_on))
             self.mysql.connection.commit()
             cursor.close()
+            self.create_user_mail_info()
             return True
         return False
+
+    def get_user_server(self):
+        return self.server
+
+    def create_user_mail_info(self):
+        cursor = self.mysql.connection.cursor()
+        cursor.execute(
+            "INSERT INTO user_mails_info(user_id) VALUES (%s)",
+            (self.user_id,))
+        self.mysql.connection.commit()
+        cursor.close()
+

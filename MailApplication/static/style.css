@@ -194,7 +194,6 @@ body {
     flex-wrap: wrap;
     flex-flow: row;
     padding: 0;
-    position: absolute;
     top: 63px;
     gap: 0;
     bottom: 60px;
@@ -203,6 +202,22 @@ body {
 .side-banner{
     flex-basis: 20%;
     border-right: 1px solid #ddd;
+}
+
+.compose-container{
+    padding: 10px 40px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#compose-button{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 50%;
 }
 
 .mail-list{
@@ -236,16 +251,48 @@ body {
     background: #ddd;
 }
 
+.authenticate-description{
+    padding: 20px 30px;
+}
+
+.authenticate-steps{
+    list-style: none;
+}
+
+.authenticate-steps li{
+    padding: 10px;
+}
+
+.authenticate-form{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.authenticate-form input{
+    width: 60%;
+}
+
 .dashboard-container .main-container{
     flex-basis: 80%;
 }
 
 .main-header{
     border-bottom: 1px solid #ddd;
-    padding: 5px 20px;
+    padding: 5px 40px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.main-description{
+.main-header .dropdown-menu{
+    padding: 20px 10px;
+}
+
+.main-header .dropdown-item{
+    padding: 10px;
 }
 
 .mails-list{
@@ -266,6 +313,15 @@ a:hover{
     display: flex !important;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
+}
+
+.unread{
+    background: #dff0f6;
+}
+
+.form-check-input{
+    margin: 0px 5px !important;
 }
 
 .mail-sender{
@@ -284,6 +340,31 @@ a:hover{
     flex-basis: 20%;
     color: black;
     font-size: 12px;
+}
+
+.compose-form-container{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 40px;
+}
+
+.compose-form-container label{
+    padding: 10px 20px;
+}
+
+.compose-form-container input{
+    width: 80%;
+}
+
+#cke_mail_content{
+    width: 100% !important;
+}
+
+#compose-actions .main-header{
+    justify-content: flex-start;
+    gap: 20px;
 }
 
 .pagination-list{
@@ -307,7 +388,6 @@ a:hover{
     background: black;
     color: white;
     display: flex;
-    position: fixed;
     bottom: 0;
 }
 

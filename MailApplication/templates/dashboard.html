@@ -1,57 +1,107 @@
 {% extends "base.html" %}
 {% block title %}Inbox{% endblock %}
 {% block content %}
+
+{% if user.is_authenticated == 0 %}
+ <div class="dashboard-container">
+   <div class="row">
+     <div class="user-authenticate-container">
+       <div class="authenticate-description">
+         <p> Before using mail services, this account needs to be authenticated. If you're using Google Mail, please follow below steps.</p>
+         <p>
+           <ul class="authenticate-steps">
+              <li><b>Step 1 : </b> Login into your Gmail account.</li>
+              <li><b>Step 2 : </b> Go to manage account and select security in the side-menu.</li>
+              <li><b>Step 3 : </b> Make sure to enable 2-step verification. If it is enabled, go to app password. and create a password for the application.</li>
+              <li><b>Step 4 : </b> Once password is created, copy the password and enter the password in the below input field.</li>
+              <li><b>Note : </b> Next time when you log in into this account, please use this password.</li>
+           </ul>
+         </p>
+       </div>
+       <form action="/change_password" method="POST" class="authenticate-form">
+         <input type="password" class="form-control" name="authenticate-password" placeholder="Please enter the password here..."><br>
+         <button type="submit" class="btn btn-primary">Authenticate</button>
+       </form>
+     </div>
+   </div>
+ </div>
+{% else %}
   <div class="dashboard-container">
     <div class="row">
       <div class="side-banner">
+        <div class="compose-container">
+          <button id="compose-button" class="btn btn-primary">
+            <span>Compose</span> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          </button>
+        </div>
         <div class="mail-list-container">
           <ul class="mail-list">
             <li class="mail-item">
               <a href="#" class="item-heading">Inbox</a>
-              <b class="item-count">256</b>
+              <b class="item-count">{{user.inbox_count}}</b>
             </li>
             <li class="mail-item">
               <a href="#">Draft</a>
-              <b class="item-count">56</b>
+              <b class="item-count">{{user.draft_count}}</b>
             </li>
             <li class="mail-item">
               <a href="#">Junk/Spam</a>
-              <b class="item-count">25</b>
+              <b class="item-count">{{user.junk_count}}</b>
             </li>
             <li class="mail-item">
               <a href="#">Sent</a>
-              <b class="item-count">6</b>
-            </li>
-            <li class="mail-item">
-              <a href="#">Compose</a>
-              <b class="item-count"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></b>
+              <b class="item-count">{{user.sent_count}}</b>
             </li>
           </ul>
         </div>
       </div>
-      <div class="main-container">
+      <div class="main-container" id="inbox-actions">
         <div class="main-header">
-          <h2>Inbox</h2>
+          <h2 class="main-header-content">Inbox</h2>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Bulk Action <i class="fa fa-caret-down" aria-hidden="true"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li class="dropdown-item">Mark as Read</li>
+              <li class="dropdown-item">Mark as Unread</li>
+              <li class="dropdown-item">Delete</li>
+            </ul>
+          </div>
         </div>
+          {% with messages = get_flashed_messages() %}
+             {% if messages %}
+                {% for message in messages %}
+                    <br>
+                    <div>
+                      <p style="margin: 0px 10px 20px;" {% if confirmation %} class="alert alert-success" {% else %} class="alert alert-danger" {% endif %}>{{ message }}</p>
+                    </div>
+                {% endfor %}
+             {% endif %}
+          {% endwith %}
         <div class="main-description">
           <ul class="mails-list">
-            <li class="mail">
+            <li class="mail unread">
               <a href="#" class="mail-info">
+                <input type="checkbox" class="form-check-input" name="mail_selected">
                 <b class="mail-sender"> SAI CHAND REDDY KAMANA</b> <b class="mail-subject"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</b> <span class="mail-date"> Mon 28 Apr 2022 07:18:00 PM</span>
               </a>
             </li>
             <li class="mail">
               <a href="#" class="mail-info">
+                <input type="checkbox" class="form-check-input" name="mail_selected">
                 <b class="mail-sender"> SAI CHAND REDDY KAMANA</b> <b class="mail-subject"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</b> <span class="mail-date"> Mon 28 Apr 2022 07:18:00 PM</span>
               </a>
             </li>
             <li class="mail">
               <a href="#" class="mail-info">
+                <input type="checkbox" class="form-check-input" name="mail_selected">
                 <b class="mail-sender"> SAI CHAND REDDY KAMANA</b> <b class="mail-subject"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</b> <span class="mail-date"> Mon 28 Apr 2022 07:18:00 PM</span>
               </a>
             </li>
             <li class="mail">
               <a href="#" class="mail-info">
+                <input type="checkbox" class="form-check-input" name="mail_selected">
                 <b class="mail-sender"> SAI CHAND REDDY KAMANA</b> <b class="mail-subject"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</b> <span class="mail-date"> Mon 28 Apr 2022 07:18:00 PM</span>
               </a>
             </li>
@@ -77,6 +127,38 @@
           </ul>
         </div>
       </div>
+      <div class="main-container" id="compose-actions">
+        <div class="main-header">
+          <button type="button" class="btn btn-secondary"> <i class="fa fa-times" aria-hidden="true"></i> </button>
+          <h2 class="main-header-content">Compose</h2>
+        </div>
+        <div class="main-description">
+          <div class="compose-mail-container">
+            <form id="mail_form" method="POST">
+              <div class="compose-form-container">
+                <label for="receiver_mail">To</label>
+                <input type="email" class="form-control" name="receiver_mail" id="receiver_mail" placeholder="Enter Receiver E-mail ID...">
+              </div>
+              <div class="compose-form-container">
+                <label for="mail_subject">Subject</label>
+                <input type="text" class="form-control" name="mail_subject" id="mail_subject" placeholder="Enter Mail Subject...">
+              </div>
+              <div class="compose-form-container">
+                <textarea name="mail_content" id="mail_content"></textarea>
+                 <script>
+                    CKEDITOR.replace('mail_content');
+                 </script>
+              </div>
+              <div class="compose-form-container" style="justify-content:flex-start; gap: 20px">
+                <button type="button" class="btn btn-success" id="send_btn"> Send </button>
+                <button type="button" class="btn btn-primary" id="save_btn"> Save as Draft </button>
+                <button type="button" class="btn btn-danger" id="discard_btn"> Discard </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+{% endif %}
 {% endblock %}
