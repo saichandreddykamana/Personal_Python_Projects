@@ -9,6 +9,7 @@ $(document).ready(function(){
 
 
 $("#send_btn").on("click", function() {
+try{
   let receiver_mail = $("#receiver_mail").val();
   let mail_subject = $("#mail_subject").val();
   let mail_content = CKEDITOR.instances['mail_content'].getData();
@@ -17,7 +18,12 @@ $("#send_btn").on("click", function() {
       data: {"receiver_mail": receiver_mail, "mail_subject": mail_subject, "mail_content": mail_content},
       method: "POST",
       success: function(data) {
-          window.location.href="{{url_for('dashboard')}}"
+      alert(data);
+          location.reload();
       }
     });
+}
+catch(err){
+    alert(err)
+}
 });

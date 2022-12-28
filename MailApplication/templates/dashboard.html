@@ -81,30 +81,14 @@
           {% endwith %}
         <div class="main-description">
           <ul class="mails-list">
-            <li class="mail unread">
+          {% for mail in user_mails%}
+           <li class="mail unread">
               <a href="#" class="mail-info">
                 <input type="checkbox" class="form-check-input" name="mail_selected">
-                <b class="mail-sender"> SAI CHAND REDDY KAMANA</b> <b class="mail-subject"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</b> <span class="mail-date"> Mon 28 Apr 2022 07:18:00 PM</span>
+                <b class="mail-sender"> {{mail.first_name}} {{mail.last_name}}</b> <b class="mail-subject"> {{mail.mail_subject}}</b> <span class="mail-date"> {{mail.mail_received_date}}</span>
               </a>
             </li>
-            <li class="mail">
-              <a href="#" class="mail-info">
-                <input type="checkbox" class="form-check-input" name="mail_selected">
-                <b class="mail-sender"> SAI CHAND REDDY KAMANA</b> <b class="mail-subject"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</b> <span class="mail-date"> Mon 28 Apr 2022 07:18:00 PM</span>
-              </a>
-            </li>
-            <li class="mail">
-              <a href="#" class="mail-info">
-                <input type="checkbox" class="form-check-input" name="mail_selected">
-                <b class="mail-sender"> SAI CHAND REDDY KAMANA</b> <b class="mail-subject"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</b> <span class="mail-date"> Mon 28 Apr 2022 07:18:00 PM</span>
-              </a>
-            </li>
-            <li class="mail">
-              <a href="#" class="mail-info">
-                <input type="checkbox" class="form-check-input" name="mail_selected">
-                <b class="mail-sender"> SAI CHAND REDDY KAMANA</b> <b class="mail-subject"> Lorem ipsum dolor sit amet, consectetur adipisicing elit.</b> <span class="mail-date"> Mon 28 Apr 2022 07:18:00 PM</span>
-              </a>
-            </li>
+          {% endfor %}
           </ul>
         </div>
         <div class="main-pagination">

@@ -38,6 +38,9 @@ class UserUtils:
     def get_user_email(self):
         return self.email
 
+    def set_user_email(self, email):
+        self.email = email
+
     def check_user_exists(self):
         cursor = self.mysql.connection.cursor()
         cursor.execute("SELECT user_id, password, is_authenticated FROM users where email = %s", (self.email,))
@@ -137,4 +140,14 @@ class UserUtils:
             (self.user_id,))
         self.mysql.connection.commit()
         cursor.close()
+
+    def get_user_mails(self, user_id):
+        cursor = self.mysql.connection.cursor()
+        cursor.execute("SELECT * FROM mails_info INNER JOIN pp_mails ON pp_mails.mail_info_id = mails_info.mail_info_id INNER JOIN users ON users.user_id = pp_mails.sender_id WHERE pp_mails.receiver_id =%s",
+                       (user_id,))
+        data = cursor.fetchall()
+        cursor.close()
+        data = list(data)
+        data.reverse()
+        return data
 

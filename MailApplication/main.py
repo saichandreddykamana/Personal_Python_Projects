@@ -32,8 +32,9 @@ def contact():
 def dashboard():
     user_id = session.get('user_id')
     details = user.get_user_details(user_id=user_id)
+    user_mails = user.get_user_mails(user_id=user_id)
     if details.get('active'):
-        return render_template('dashboard.html', user_id=user_id, user=details, confirmation=confirmation)
+        return render_template('dashboard.html', user_id=user_id, user=details, confirmation=confirmation, user_mails=user_mails)
     return redirect(url_for('home'))
 
 
@@ -47,7 +48,8 @@ def send_mail():
         response = mail.send_mail(receiver_mail=receiver_mail,
                                   mail_content=mail_content,
                                   mail_subject=mail_subject,
-                                  sender_mail=sender_email)
+                                  sender_mail=sender_email,
+                                  sender_id=session.get('user_id'))
         if response:
             global confirmation
             confirmation = True
