@@ -1,4 +1,5 @@
 import datetime
+import math
 import re
 
 from flask import Flask, render_template, request, flash, url_for, redirect, session
@@ -28,13 +29,23 @@ def contact():
     return redirect(url_for('dashboard'))
 
 
-@app.route("/dashboard")
-def dashboard():
+@app.route("/dashboard", defaults={'page': 1, 'rows': 10})
+@app.route("/dashboard/inbox/<int:page>/<int:rows>")
+def dashboard(page, rows):
+    start = rows * (page - 1)
     user_id = session.get('user_id')
     details = user.get_user_details(user_id=user_id)
-    user_mails = user.get_user_mails(user_id=user_id)
+    page_count = math.ceil(details['inbox_count']/rows) + 1
+    prev_page = page
+    if page != 1 and page != 0:
+        prev_page = page - 1
+    next_page = page + 1
+    if next_page > page_count - 1:
+        next_page = page_count - 1
+    user_mails = user.get_user_mails(user_id=user_id, start=start, per_page=rows)
     if details.get('active'):
-        return render_template('dashboard.html', user_id=user_id, user=details, confirmation=confirmation, user_mails=user_mails)
+        return render_template('dashboard.html', user_id=user_id, user=details, confirmation=confirmation,
+                               user_mails=user_mails, page_count=page_count, page=page, prev_page=prev_page, next_page=next_page)
     return redirect(url_for('home'))
 
 
@@ -94,6 +105,15 @@ def change_password():
             confirmation = True
             flash(result)
             return redirect(url_for('dashboard'))
+
+
+@app.route("/get_full_mail", methods=['POST'])
+def get_full_mail():
+    if request.method == 'POST':
+        mail_id = request.form['mail_id']
+        mail.set_mail_id(mail_id=mail_id)
+        mail_details = mail.get_full_mail()
+        return mail_details
 
 
 @app.route("/register", methods=['POST'])

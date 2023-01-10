@@ -36,8 +36,8 @@
         </div>
         <div class="mail-list-container">
           <ul class="mail-list">
-            <li class="mail-item">
-              <a href="#" class="item-heading">Inbox</a>
+            <li class="mail-item" >
+              <a href="/dashboard" class="item-heading">Inbox</a>
               <b class="item-count">{{user.inbox_count}}</b>
             </li>
             <li class="mail-item">
@@ -80,40 +80,82 @@
              {% endif %}
           {% endwith %}
         <div class="main-description">
-          <ul class="mails-list">
-          {% for mail in user_mails%}
-           <li class="mail unread">
-              <a href="#" class="mail-info">
-                <input type="checkbox" class="form-check-input" name="mail_selected">
-                <b class="mail-sender"> {{mail.first_name}} {{mail.last_name}}</b> <b class="mail-subject"> {{mail.mail_subject}}</b> <span class="mail-date"> {{mail.mail_received_date}}</span>
-              </a>
-            </li>
-          {% endfor %}
-          </ul>
-        </div>
+          <div class="mail-description">
+            <ul class="mails-list">
+            {% for mail in user_mails %}
+             <li class="mail {% if mail.mail_read == 0 %}unread {% endif %}" id="mail-{{mail.mail_id}}" onclick="open_mail('{{mail.mail_id}}')">
+                <a href="#" class="mail-info">
+                  <input type="checkbox" class="form-check-input" name="mail_selected">
+                  <b class="mail-sender"> {{mail.first_name}} {{mail.last_name}}</b> <b class="mail-subject"> {{mail.mail_subject}}</b> <span class="mail-date"> {{mail.mail_received_date}}</span>
+                </a>
+              </li>
+            {% endfor %}
+            </ul>
+          </div>
         <div class="main-pagination">
-          <ul class="pagination-list">
-            <li class="pagination-item left">
-              <a href=""> <i class="fa fa-caret-left" aria-hidden="true"></i> </a>
-            </li>
-            <li class="pagination-item">
-              <a href=""> 1 </a>
-            </li>
-            <li class="pagination-item">
-              <a href=""> 2 </a>
-            </li>
-            <li class="pagination-item">
-              <a href=""> 3 </a>
-            </li>
-            <li class="pagination-item right">
-              <a href=""> <i class="fa fa-caret-right" aria-hidden="true"></i> </a>
-            </li>
-          </ul>
+          <div class="pagination">
+              <ul class="pagination-list">
+                <li class="pagination-item left" onclick="window.open('/dashboard/inbox/{{prev_page}}', '_self')">
+                  <a href="/dashboard/inbox/{{prev_page}}"> <i class="fa fa-caret-left" aria-hidden="true"></i> </a>
+                </li>
+                {% for page_num in range(1, page_count) %}
+                    <li class="pagination-item"  onclick="window.open('/dashboard/inbox/{{page_num}}', '_self')">
+                      <a href="/dashboard/inbox/{{page_num}}"> {{page_num}} </a>
+                    </li>
+                {% endfor %}
+                <li class="pagination-item right" onclick="window.open('/dashboard/inbox/{{next_page}}', '_self')">
+                  <a href="/dashboard/inbox/{{next_page}}"> <i class="fa fa-caret-right" aria-hidden="true"></i> </a>
+                </li>
+              </ul>
+          </div>
+          <div class="form-group">
+            <label for="no_of_rows">Select No Of Rows</label>
+            <select class="form-control" id="no_of_rows" onchange="location = this.options[this.selectedIndex].value;">
+              <option value="/dashboard/inbox/1/10">
+                10
+              </option>
+              <option value="/dashboard/inbox/1/20">
+                20
+              </option>
+              <option value="/dashboard/inbox/1/30">
+                30
+              </option>
+              <option value="/dashboard/inbox/1/40">
+                40
+              </option>
+              <option value="/dashboard/inbox/1/50">
+                50
+              </option>
+            </select>
+          </div>
+        </div>
+        </div>
+      </div>
+      <div class="main-container" id="full-mail-details">
+        <div class="full-mail-container header">
+          <h4 id="mail_full_details_header"></h4>
+        </div>
+        <div class="full-mail-container message">
+          <div class="full-mail-container info">
+              <span id="mail-sender"></span>
+              <span id="mail-sender-name"></span>
+              <span id="mail-received-date"></span>
+          </div>
+          <p id="mail-received-body"></p>
+          <div class="full-mail-container actions">
+            <button class="btn btn-secondary btn-sm"> <i class="fa fa-reply" aria-hidden="true"></i> Reply</button>
+            <button class="btn btn-secondary btn-sm"> <i class="fa fa-reply-all" aria-hidden="true"></i> Reply All</button>
+            <button class="btn btn-secondary btn-sm"> <i class="fa fa-eye-slash" aria-hidden="true"></i> Mark as Unread</button>
+            <button class="btn btn-secondary btn-sm"> <i class="fa fa-share" aria-hidden="true"></i> Forward</button>
+            <button class="btn btn-secondary btn-sm"> <i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+          </div>
         </div>
       </div>
       <div class="main-container" id="compose-actions">
         <div class="main-header">
-          <button type="button" class="btn btn-secondary"> <i class="fa fa-times" aria-hidden="true"></i> </button>
+          <button type="button" class="btn btn-secondary">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>
           <h2 class="main-header-content">Compose</h2>
         </div>
         <div class="main-description">

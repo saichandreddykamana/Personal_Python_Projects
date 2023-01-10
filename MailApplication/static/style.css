@@ -188,6 +188,10 @@ body {
     width: 100% !important;
 }
 
+#full-mail-details{
+    display: none;
+}
+
 .dashboard-container > .row{
     width: inherit;
     display: flex;
@@ -278,6 +282,28 @@ body {
     flex-basis: 80%;
 }
 
+#full-mail-details{
+    padding: 20px;
+}
+
+.full-mail-container{
+    padding: 15px;
+}
+
+.info{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#mail-received-body{
+    padding: 15px;
+}
+
+.header, .message{
+    border: 1px solid #ddd;
+}
+
 .main-header{
     border-bottom: 1px solid #ddd;
     padding: 5px 40px;
@@ -324,10 +350,42 @@ a:hover{
     margin: 0px 5px !important;
 }
 
+.form-group{
+    width: 30%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.form-group select{
+    width: 20%;
+}
+
+.actions{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.actions button{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
 .mail-sender{
     flex-basis: 20%;
     color: black;
     font-size: 13px;
+}
+
+.main-pagination{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .mail-subject{
